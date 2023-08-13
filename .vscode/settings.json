@@ -1,0 +1,3 @@
+{
+  "rust-analyzer.linkedProjects": ["./programs/pockets-program/Cargo.toml"]
+}
