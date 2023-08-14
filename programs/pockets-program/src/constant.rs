@@ -4,7 +4,12 @@ pub const SEEDS_CITIZEN: &[u8; 7] = b"citizen";
 pub const SEEDS_PROPOSAL: &[u8; 8] = b"proposal";
 pub const SEEDS_VOTE: &[u8; 4] = b"vote";
 pub const SEEDS_DELEGATION: &[u8; 8] = b"delegate";
+pub const SEEDS_RF: &[u8; 2] = b"rf";
 
-pub const MAX_HARVEST_TYPES: usize = 5; // Max number of harvest types you can have in a resource field
-pub const LONGEST_RESOURCE_NAME: usize = 4; // character count of the longest resource name
-pub const RESOURCES: [&str; 1] = ["Wood"];
+pub const MAX_HARVEST_TYPES: usize = 1; // Max number of harvest types you can have in a resource field
+pub const LONGEST_RESOURCE_NAME: usize = 8; // character count of the longest resource name
+pub const RESOURCES: [&str; 6] = ["Cables", "Soil", "Seeds", "Bandages", "Ingots", "Stone"];
+pub const RF_CHANCE: u64 = 1000; // 1 in 1000 chance to find a RF, improved with every time it's developed
+pub const RF_MAX_YIELD: u64 = 200;
+pub const RF_MAX_TIMER: u64 = 86400; // 24 hrs
+pub const RF_MIN_TIMER: u64 = 3600;

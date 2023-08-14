@@ -1,4 +1,5 @@
 use anchor_lang::prelude::*;
+use anchor_lang::solana_program::hash::*;
 
 declare_id!("GEUwNbnu9jkRMY8GX5Ar4R11mX9vXR8UDFnKZMn5uWLJ");
 
@@ -8,11 +9,13 @@ pub mod context;
 pub mod error;
 
 use crate::account::*;
+use crate::constant::*;
 use crate::context::*;
 use crate::error::*;
 
 #[program]
 pub mod pockets_program {
+
     use super::*;
 
     // Faction
@@ -245,8 +248,60 @@ pub mod pockets_program {
         Ok(())
     }
 
-    // RC7: Resource Fields
-    // Mine Resource Field
+    // Resource Fields
+    // Allocate Resource Field -- Server Only
+    pub fn allocate_resource_field(ctx: Context<DiscoverRF>, id: String) -> Result<()> {
+        ctx.accounts.rf.id = id;
+        ctx.accounts.rf.harvest = None;
+        ctx.accounts.rf.refresh_seconds = None;
+        ctx.accounts.rf.is_harvestable = false;
+        ctx.accounts.rf.inital_claimant = None;
+        Ok(())
+    }
+
+    pub fn develop_resource_field(ctx: Context<DevelopRF>) -> Result<()> {
+        let clock = Clock::get().unwrap();
+        let mut hash_inputs: Vec<u8> = vec![];
+        hash_inputs.extend(clock.slot.to_be_bytes().clone());
+        hash_inputs.extend(ctx.accounts.rf.times_developed.to_be_bytes().clone());
+
+        // [0..8] = Roll to see if it's valid RF
+        // [9..16] = TYPE
+        // [17..24] = AMT
+        // [25..32] = Refresh Seconds
+        let hash_bytes = &hash(&hash_inputs).to_bytes();
+
+        // Did it find a resource field?
+        // it'll roll a number betwen 1 and 1000, adding times it's previously failed to the roll
+        let roll: u64 = (u64::from_be_bytes(hash_bytes[0..8].try_into().unwrap())
+            / (u64::MAX / RF_CHANCE))
+            + ctx.accounts.rf.times_developed;
+        if roll == RF_CHANCE {
+            // YES -> Determine TYPE, AMT, and REFRESH TIME
+            let resource_type: u64 = u64::from_be_bytes(hash_bytes[9..16].try_into().unwrap())
+                / (u64::MAX / (RESOURCES.len() as u64 - 1));
+
+            let harvest_amt: u64 = u64::from_be_bytes(hash_bytes[9..16].try_into().unwrap())
+                / (u64::MAX / RF_MAX_YIELD);
+            ctx.accounts.rf.harvest = Some(Harvest {
+                resource: String::from(RESOURCES[resource_type as usize]),
+                harvest: harvest_amt,
+            });
+            ctx.accounts.rf.refresh_seconds = Some(
+                RF_MIN_TIMER
+                    + u64::from_be_bytes(hash_bytes[9..16].try_into().unwrap())
+                        / (u64::MAX / (RF_MAX_TIMER - RF_MIN_TIMER)),
+            );
+
+            msg!("Resource Field Developed!");
+            // Set to be harvestable
+            ctx.accounts.rf.is_harvestable = true;
+            ctx.accounts.rf.inital_claimant = Some(ctx.accounts.wallet.key());
+        }
+        // NO -> Increment Times Developed
+        ctx.accounts.rf.times_developed += 1;
+        Ok(())
+    }
 
     // RC6+ Pocket AMM
 }

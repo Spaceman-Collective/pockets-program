@@ -315,3 +315,42 @@ pub struct AdjustDelegation<'info> {
   )]
   pub delegation_record: Account<'info, VoteDelegation>,
 }
+
+#[derive(Accounts)]
+#[instruction(id: String)]
+pub struct DiscoverRF<'info> {
+  #[account(
+    mut,
+    address = Pubkey::from_str(SERVER_PUBKEY).unwrap()
+  )]
+  pub server: Signer<'info>,
+  pub system_program: Program<'info, System>,
+
+  #[account(
+    init,
+    payer=server,
+    seeds=[
+      SEEDS_RF,
+      id.as_bytes(),
+    ],
+    bump,
+    space=8+ResourceField::get_max_size()
+  )]
+  pub rf: Account<'info, ResourceField>,
+}
+
+#[derive(Accounts)]
+pub struct DevelopRF<'info> {
+  #[account(mut)]
+  pub wallet: Signer<'info>,
+  #[account(
+    token::authority = wallet,
+    token::mint = citizen.mint.key()
+  )]
+  pub wallet_ata: Account<'info, TokenAccount>,
+  pub system_program: Program<'info, System>,
+  pub citizen: Account<'info, Citizen>,
+
+  #[account(mut)]
+  pub rf: Account<'info, ResourceField>,
+}

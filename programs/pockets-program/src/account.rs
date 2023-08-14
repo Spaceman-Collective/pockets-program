@@ -81,8 +81,12 @@ impl MaxSize for VoteDelegation {
 
 #[account]
 pub struct ResourceField {
-    pub founder: Pubkey,
-    pub harvest: Vec<Harvest>,
+    pub id: String, //(4+21)
+    pub harvest: Option<Harvest>,
+    pub refresh_seconds: Option<u64>,
+    pub is_harvestable: bool,
+    pub inital_claimant: Option<Pubkey>,
+    pub times_developed: u64,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone)]
@@ -93,7 +97,7 @@ pub struct Harvest {
 
 impl MaxSize for ResourceField {
     fn get_max_size() -> usize {
-        return 32 + (4 + (MAX_HARVEST_TYPES * (4 + LONGEST_RESOURCE_NAME + 8)));
+        return (4 + 21) + (1 + (LONGEST_RESOURCE_NAME + 8)) + 9 + 1 + 33 + 8;
     }
 }
 
