@@ -28,6 +28,12 @@ pub struct CreateFaction<'info> {
       space=8+Faction::get_max_size()
     )]
     pub faction: Account<'info, Faction>,
+
+    #[account(
+      mut,
+      constraint = first_citizen.faction == None
+    )]
+    pub first_citizen: Account<'info, Citizen>,
 }
 
 #[derive(Accounts)]

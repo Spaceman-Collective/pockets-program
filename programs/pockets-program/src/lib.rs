@@ -29,6 +29,10 @@ pub mod pockets_program {
         ctx.accounts.faction.id = id;
         ctx.accounts.faction.max_voting_power = starting_voting_power;
         ctx.accounts.faction.threshold_to_pass = threshold;
+
+        ctx.accounts.first_citizen.faction = Some(ctx.accounts.faction.key());
+        ctx.accounts.first_citizen.granted_voting_power = starting_voting_power;
+        ctx.accounts.first_citizen.total_voting_power = starting_voting_power;
         Ok(())
     }
     // Update Faction (Server Only)
