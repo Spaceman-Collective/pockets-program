@@ -44,7 +44,6 @@ pub struct Proposal {
 pub enum ProposalStatus {
     VOTING,
     PASSED,
-    PROCESSING,
     CLOSED,
 }
 

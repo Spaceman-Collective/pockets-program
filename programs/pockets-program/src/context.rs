@@ -37,6 +37,22 @@ pub struct CreateFaction<'info> {
 }
 
 #[derive(Accounts)]
+pub struct DeleteFactionAccount<'info>{
+  #[account(
+    mut,
+    address = Pubkey::from_str(SERVER_PUBKEY).unwrap()
+  )]
+  pub server: Signer<'info>,
+  pub system_program: Program<'info, System>,
+
+  #[account(
+    mut,
+    close=server
+  )]
+  pub faction: Account<'info, Faction>,
+}
+
+#[derive(Accounts)]
 #[instruction(id: String, starting_voting_power: u64, threshold: u64)]
 pub struct UpdateFaction<'info> {
     #[account(
@@ -78,6 +94,23 @@ pub struct CreateCitizenRecord<'info> {
     pub citizen: Account<'info, Citizen>,
     pub mint: Account<'info, Mint>, 
 }
+
+#[derive(Accounts)]
+pub struct DeleteCitizenAccount<'info>{
+  #[account(
+    mut,
+    address = Pubkey::from_str(SERVER_PUBKEY).unwrap()
+  )]
+  pub server: Signer<'info>,
+  pub system_program: Program<'info, System>,
+
+  #[account(
+    mut,
+    close=server
+  )]
+  pub citizen: Account<'info, Citizen>,
+}
+
 
 #[derive(Accounts)]
 pub struct JoinFaction<'info>{
@@ -128,6 +161,22 @@ pub struct CreateProposal<'info> {
   )]
   pub proposal: Account<'info, Proposal>,
   pub faction: Account<'info, Faction>,
+}
+
+#[derive(Accounts)]
+pub struct DeleteProposalAccount<'info>{
+  #[account(
+    mut,
+    address = Pubkey::from_str(SERVER_PUBKEY).unwrap()
+  )]
+  pub server: Signer<'info>,
+  pub system_program: Program<'info, System>,
+
+  #[account(
+    mut,
+    close=server
+  )]
+  pub proposal: Account<'info, Proposal>,
 }
 
 #[derive(Accounts)]
@@ -296,6 +345,22 @@ pub struct DelegateVote<'info> {
 }
 
 #[derive(Accounts)]
+pub struct DeleteVoteDelegation<'info>{
+  #[account(
+    mut,
+    address = Pubkey::from_str(SERVER_PUBKEY).unwrap()
+  )]
+  pub server: Signer<'info>,
+  pub system_program: Program<'info, System>,
+
+  #[account(
+    mut,
+    close=server
+  )]
+  pub delegation: Account<'info, VoteDelegation>,
+}
+
+#[derive(Accounts)]
 pub struct AdjustDelegation<'info> {
   #[account(mut)]
   pub wallet: Signer<'info>,
@@ -346,6 +411,23 @@ pub struct DiscoverRF<'info> {
 }
 
 #[derive(Accounts)]
+pub struct DeleteResourceField<'info>{
+  #[account(
+    mut,
+    address = Pubkey::from_str(SERVER_PUBKEY).unwrap()
+  )]
+  pub server: Signer<'info>,
+  pub system_program: Program<'info, System>,
+
+  #[account(
+    mut,
+    close=server
+  )]
+  pub resource_field: Account<'info, ResourceField>,
+}
+
+
+#[derive(Accounts)]
 pub struct DevelopRF<'info> {
   #[account(mut)]
   pub wallet: Signer<'info>,
@@ -359,4 +441,8 @@ pub struct DevelopRF<'info> {
 
   #[account(mut)]
   pub rf: Account<'info, ResourceField>,
+  #[account(
+    constraint = citizen.faction == Some(faction.key())
+  )]
+  pub faction: Account<'info, Faction>,
 }

@@ -15,4 +15,7 @@ pub enum PocketErrors {
 
     #[msg("Delgate has pending votes right now")]
     DelegatePendingVotes,
+
+    #[msg("Resource Field is already developed!")]
+    ResourceFieldAlreadyDeveloped,
 }

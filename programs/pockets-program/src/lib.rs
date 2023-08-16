@@ -15,7 +15,6 @@ use crate::error::*;
 
 #[program]
 pub mod pockets_program {
-
     use super::*;
 
     // Faction
@@ -35,6 +34,10 @@ pub mod pockets_program {
         ctx.accounts.first_citizen.total_voting_power = starting_voting_power;
         Ok(())
     }
+    pub fn delete_faction(_ctx: Context<DeleteFactionAccount>) -> Result<()> {
+        Ok(())
+    }
+
     // Update Faction (Server Only)
     pub fn update_faction(
         ctx: Context<UpdateFaction>,
@@ -52,6 +55,10 @@ pub mod pockets_program {
     pub fn create_citizen(ctx: Context<CreateCitizenRecord>) -> Result<()> {
         ctx.accounts.citizen.mint = ctx.accounts.mint.key();
         // Rest are set to None, 0, 0 by default
+        Ok(())
+    }
+
+    pub fn delete_citizen(_ctx: Context<DeleteCitizenAccount>) -> Result<()> {
         Ok(())
     }
 
@@ -93,6 +100,9 @@ pub mod pockets_program {
         ctx.accounts.proposal.id = id;
         ctx.accounts.proposal.status = ProposalStatus::VOTING;
         ctx.accounts.proposal.faction = ctx.accounts.faction.key();
+        Ok(())
+    }
+    pub fn delete_proposal(_ctx: Context<DeleteProposalAccount>) -> Result<()> {
         Ok(())
     }
     // Update Proposal Status (Server Only)
@@ -198,6 +208,11 @@ pub mod pockets_program {
         ctx.accounts.delegation_record.vote_amt = vote_amt;
         Ok(())
     }
+
+    pub fn delete_vote_delegation(_ctx: Context<DeleteVoteDelegation>) -> Result<()> {
+        Ok(())
+    }
+
     // Adjust Delegate Vote
     pub fn adjust_vote_delegation(
         ctx: Context<AdjustDelegation>,
@@ -263,7 +278,15 @@ pub mod pockets_program {
         Ok(())
     }
 
+    pub fn delete_resource_field(_ctx: Context<DeleteResourceField>) -> Result<()> {
+        Ok(())
+    }
+
     pub fn develop_resource_field(ctx: Context<DevelopRF>) -> Result<()> {
+        if ctx.accounts.rf.is_harvestable {
+            return err!(PocketErrors::ResourceFieldAlreadyDeveloped);
+        }
+
         let clock = Clock::get().unwrap();
         let mut hash_inputs: Vec<u8> = vec![];
         hash_inputs.extend(clock.slot.to_be_bytes().clone());
@@ -280,20 +303,22 @@ pub mod pockets_program {
         let roll: u64 = (u64::from_be_bytes(hash_bytes[0..8].try_into().unwrap())
             / (u64::MAX / RF_CHANCE))
             + ctx.accounts.rf.times_developed;
-        if roll == RF_CHANCE {
+        if roll >= RF_CHANCE {
             // YES -> Determine TYPE, AMT, and REFRESH TIME
             let resource_type: u64 = u64::from_be_bytes(hash_bytes[9..16].try_into().unwrap())
                 / (u64::MAX / (RESOURCES.len() as u64 - 1));
 
-            let harvest_amt: u64 = u64::from_be_bytes(hash_bytes[9..16].try_into().unwrap())
-                / (u64::MAX / RF_MAX_YIELD);
+            let harvest_amt: u64 = RF_MIN_YIELD
+                + u64::from_be_bytes(hash_bytes[17..24].try_into().unwrap())
+                    / (u64::MAX / (RF_MAX_YIELD - RF_MIN_YIELD));
+
             ctx.accounts.rf.harvest = Some(Harvest {
                 resource: String::from(RESOURCES[resource_type as usize]),
                 harvest: harvest_amt,
             });
             ctx.accounts.rf.refresh_seconds = Some(
                 RF_MIN_TIMER
-                    + u64::from_be_bytes(hash_bytes[9..16].try_into().unwrap())
+                    + u64::from_be_bytes(hash_bytes[25..32].try_into().unwrap())
                         / (u64::MAX / (RF_MAX_TIMER - RF_MIN_TIMER)),
             );
 
