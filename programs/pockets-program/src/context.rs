@@ -53,7 +53,7 @@ pub struct DeleteFactionAccount<'info>{
 }
 
 #[derive(Accounts)]
-#[instruction(id: String, starting_voting_power: u64, threshold: u64)]
+#[instruction(starting_voting_power: u64, threshold: u64)]
 pub struct UpdateFaction<'info> {
     #[account(
       address = Pubkey::from_str(SERVER_PUBKEY).unwrap()
@@ -61,16 +61,24 @@ pub struct UpdateFaction<'info> {
     pub server: Signer<'info>,
     pub system_program: Program<'info, System>,
 
-    #[account(
-      mut,
-      seeds=[
-        SEEDS_FACTION,
-        id.as_bytes(),
-      ],
-      bump,
-    )]
+    #[account(mut)]
     pub faction: Account<'info, Faction>,
 }
+
+#[derive(Accounts)]
+pub struct TransferFromFaction<'info> {
+  #[account(
+    address = Pubkey::from_str(SERVER_PUBKEY).unwrap()
+  )]
+  pub server: Signer<'info>,
+  pub system_program: Program<'info, System>,
+
+  #[account(mut)]
+  pub faction: Account<'info, Faction>,
+  #[account(mut)]
+  pub citizen: Account<'info, Citizen>,
+}
+
 
 #[derive(Accounts)]
 pub struct CreateCitizenRecord<'info> {

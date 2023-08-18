@@ -41,20 +41,41 @@ pub mod pockets_program {
     // Update Faction (Server Only)
     pub fn update_faction(
         ctx: Context<UpdateFaction>,
-        id: String,
-        starting_voting_power: u64,
+        max_voting_power: u64,
         threshold: u64,
     ) -> Result<()> {
-        ctx.accounts.faction.id = id;
-        ctx.accounts.faction.max_voting_power = starting_voting_power;
+        if max_voting_power > ctx.accounts.faction.max_voting_power {
+            ctx.accounts.faction.unallocated_voting_power +=
+                max_voting_power - ctx.accounts.faction.max_voting_power
+        }
+
+        ctx.accounts.faction.max_voting_power = max_voting_power;
         ctx.accounts.faction.threshold_to_pass = threshold;
+        Ok(())
+    }
+
+    pub fn transfer_votes_from_faction(
+        ctx: Context<TransferFromFaction>,
+        amount: u64,
+    ) -> Result<()> {
+        if amount > ctx.accounts.faction.max_voting_power {
+            return err!(PocketErrors::TransferFromFactionErrror);
+        }
+
+        ctx.accounts.faction.unallocated_voting_power -= amount;
+        ctx.accounts.citizen.granted_voting_power += amount;
+        ctx.accounts.citizen.total_voting_power += amount;
         Ok(())
     }
 
     // Create Citizen Record (Server Only -- Created for MINTs not for Wallets)
     pub fn create_citizen(ctx: Context<CreateCitizenRecord>) -> Result<()> {
         ctx.accounts.citizen.mint = ctx.accounts.mint.key();
-        // Rest are set to None, 0, 0 by default
+        ctx.accounts.citizen.faction = None;
+        ctx.accounts.citizen.delegated_voting_power = 0;
+        ctx.accounts.citizen.granted_voting_power = 0;
+        ctx.accounts.citizen.total_voting_power = 0;
+        ctx.accounts.citizen.max_pledged_voting_power = 0;
         Ok(())
     }
 

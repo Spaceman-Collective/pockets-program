@@ -18,4 +18,7 @@ pub enum PocketErrors {
 
     #[msg("Resource Field is already developed!")]
     ResourceFieldAlreadyDeveloped,
+
+    #[msg("Faction doesn't have that many unallocated votes")]
+    TransferFromFactionErrror,
 }

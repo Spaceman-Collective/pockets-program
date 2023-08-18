@@ -8,8 +8,8 @@ pockets_program = "GEUwNbnu9jkRMY8GX5Ar4R11mX9vXR8UDFnKZMn5uWLJ"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
-wallet = "/Users/spacemandev/.config/solana/id.json"
+cluster = "https://rpc.helius.xyz/?api-key=1b21b073-a222-47bb-8628-564145e58f4e " #"Localnet"
+wallet = "/Users/spacemandev/.config/solana/pockmZEzU9m8bkgHMtA3bmHASDFKv8N3kwkEbvQdd9K.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
