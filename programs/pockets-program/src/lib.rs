@@ -347,9 +347,10 @@ pub mod pockets_program {
             // Set to be harvestable
             ctx.accounts.rf.is_harvestable = true;
             ctx.accounts.rf.inital_claimant = Some(ctx.accounts.wallet.key());
+        } else {
+            // NO -> Increment Times Developed
+            ctx.accounts.rf.times_developed += 1;
         }
-        // NO -> Increment Times Developed
-        ctx.accounts.rf.times_developed += 1;
         Ok(())
     }
 
