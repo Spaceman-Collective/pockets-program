@@ -12,5 +12,5 @@ pub const RESOURCES: [&str; 6] = ["Cables", "Soil", "Flowers", "Bandages", "Ingo
 pub const RF_CHANCE: u64 = 1000; // 1 in 1000 chance to find a RF, improved with every time it's developed
 pub const RF_MIN_YIELD: u64 = 5;
 pub const RF_MAX_YIELD: u64 = 15;
-pub const RF_MAX_TIMER: u64 = 86400; // 24 hrs
-pub const RF_MIN_TIMER: u64 = 3600;
+pub const RF_MAX_TIMER: u64 = 86400000; // 24 hrs
+pub const RF_MIN_TIMER: u64 = 300000; // 5 m
