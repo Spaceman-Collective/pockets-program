@@ -295,7 +295,7 @@ pub mod pockets_program {
         ctx.accounts.rf.harvest = None;
         ctx.accounts.rf.refresh_seconds = None;
         ctx.accounts.rf.is_harvestable = false;
-        ctx.accounts.rf.inital_claimant = None;
+        ctx.accounts.rf.initial_claimant = None;
         Ok(())
     }
 
@@ -326,11 +326,11 @@ pub mod pockets_program {
             + ctx.accounts.rf.times_developed;
         if roll >= RF_CHANCE {
             // YES -> Determine TYPE, AMT, and REFRESH TIME
-            let resource_type: u64 = u64::from_be_bytes(hash_bytes[9..16].try_into().unwrap())
+            let resource_type: u64 = u64::from_be_bytes(hash_bytes[8..16].try_into().unwrap())
                 / (u64::MAX / (RESOURCES.len() as u64 - 1));
 
             let harvest_amt: u64 = RF_MIN_YIELD
-                + u64::from_be_bytes(hash_bytes[17..24].try_into().unwrap())
+                + u64::from_be_bytes(hash_bytes[16..24].try_into().unwrap())
                     / (u64::MAX / (RF_MAX_YIELD - RF_MIN_YIELD));
 
             ctx.accounts.rf.harvest = Some(Harvest {
@@ -339,14 +339,14 @@ pub mod pockets_program {
             });
             ctx.accounts.rf.refresh_seconds = Some(
                 RF_MIN_TIMER
-                    + u64::from_be_bytes(hash_bytes[25..32].try_into().unwrap())
+                    + u64::from_be_bytes(hash_bytes[24..32].try_into().unwrap())
                         / (u64::MAX / (RF_MAX_TIMER - RF_MIN_TIMER)),
             );
 
             msg!("Resource Field Developed!");
             // Set to be harvestable
             ctx.accounts.rf.is_harvestable = true;
-            ctx.accounts.rf.inital_claimant = Some(ctx.accounts.wallet.key());
+            ctx.accounts.rf.initial_claimant = Some(ctx.accounts.wallet.key());
         } else {
             // NO -> Increment Times Developed
             ctx.accounts.rf.times_developed += 1;

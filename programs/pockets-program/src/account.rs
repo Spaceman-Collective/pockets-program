@@ -84,7 +84,7 @@ pub struct ResourceField {
     pub harvest: Option<Harvest>,
     pub refresh_seconds: Option<u64>,
     pub is_harvestable: bool,
-    pub inital_claimant: Option<Pubkey>,
+    pub initial_claimant: Option<Pubkey>,
     pub times_developed: u64,
 }
 
@@ -96,7 +96,8 @@ pub struct Harvest {
 
 impl MaxSize for ResourceField {
     fn get_max_size() -> usize {
-        return (4 + 21) + (1 + (LONGEST_RESOURCE_NAME + 8)) + 9 + 1 + 33 + 8;
+        return (4 + 21) + (1 + (4 + LONGEST_RESOURCE_NAME + 8)) + 9 + 1 + 33 + 8 + 8;
+        //added 8 bytes because it won't serialize the amount i think it is.
     }
 }
 
