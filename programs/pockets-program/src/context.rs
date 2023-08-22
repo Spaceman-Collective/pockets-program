@@ -227,6 +227,7 @@ pub struct Vote<'info> {
   pub vote: Account<'info, ProposalVote>,
 
   #[account(
+    mut,
     constraint = (proposal.status == ProposalStatus::VOTING) && (citizen.faction == Some(proposal.faction))
   )]
   pub proposal: Account<'info, Proposal>,
@@ -257,6 +258,7 @@ pub struct UpdateVote<'info> {
   pub vote: Account<'info, ProposalVote>,
 
   #[account(
+    mut,
     constraint = (proposal.status == ProposalStatus::VOTING) && (citizen.faction == Some(proposal.faction))
   )]
   pub proposal: Account<'info, Proposal>,
