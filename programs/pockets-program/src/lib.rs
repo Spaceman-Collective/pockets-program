@@ -346,7 +346,7 @@ pub mod pockets_program {
             msg!("Resource Field Developed!");
             // Set to be harvestable
             ctx.accounts.rf.is_harvestable = true;
-            ctx.accounts.rf.initial_claimant = Some(ctx.accounts.wallet.key());
+            ctx.accounts.rf.initial_claimant = Some(ctx.accounts.citizen.mint.key());
         } else {
             // NO -> Increment Times Developed
             ctx.accounts.rf.times_developed += 1;
