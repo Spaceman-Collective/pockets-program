@@ -1,7 +1,8 @@
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::hash::*;
 
-declare_id!("GEUwNbnu9jkRMY8GX5Ar4R11mX9vXR8UDFnKZMn5uWLJ");
+//declare_id!("GEUwNbnu9jkRMY8GX5Ar4R11mX9vXR8UDFnKZMn5uWLJ");
+declare_id!("9ejfcqQpWYQqXMiPeZVHhhbNu3qufuLWzGzVEBQYBEgS");
 
 pub mod account;
 pub mod constant;

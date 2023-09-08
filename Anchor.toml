@@ -2,13 +2,13 @@
 seeds = false
 skip-lint = false
 [programs.localnet]
-pockets_program = "GEUwNbnu9jkRMY8GX5Ar4R11mX9vXR8UDFnKZMn5uWLJ"
+pockets_program = "9ejfcqQpWYQqXMiPeZVHhhbNu3qufuLWzGzVEBQYBEgS"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "https://rpc.helius.xyz/?api-key=1b21b073-a222-47bb-8628-564145e58f4e " #"Localnet"
+cluster = "https://rpc.helius.xyz/?api-key=5af76bac-2af7-45d6-87db-5cbcde1004b0 " #"Localnet"
 wallet = "/Users/spacemandev/.config/solana/pockmZEzU9m8bkgHMtA3bmHASDFKv8N3kwkEbvQdd9K.json"
 
 [scripts]
