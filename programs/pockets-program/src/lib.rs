@@ -328,7 +328,7 @@ pub mod pockets_program {
         if roll >= RF_CHANCE {
             // YES -> Determine TYPE, AMT, and REFRESH TIME
             let resource_type: u64 = u64::from_be_bytes(hash_bytes[8..16].try_into().unwrap())
-                / (u64::MAX / (RESOURCES.len() as u64 - 1));
+                / (u64::MAX / (RESOURCES.len() as u64));
 
             let harvest_amt: u64 = RF_MIN_YIELD
                 + u64::from_be_bytes(hash_bytes[16..24].try_into().unwrap())
